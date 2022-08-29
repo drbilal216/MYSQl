@@ -1,0 +1,246 @@
+# Single line Comment
+
+/*
+Multiline Comment
+*/
+
+# ctrl shift enter fot execute entire script
+# ctrl enter to execute current line
+
+#################################
+
+show databases;			# show available databases
+use  world;			# selecting a database
+show tables;			# show tables of selected database
+select * from city;		# show table content (rows and column)
+desc city;			# see schema(datatype)
+
+create database customers;	# creating a custom database
+use customers;			# Selecting a database for use
+
+create table customer_info(	# create table in database customers
+id integer auto_increment,	# auto genrate integer for id
+first_name varchar(10),		# varchar (string and can have spechial character)
+last_name varchar(10),
+salary integer,
+primary key(id)			# primary key is id
+);
+
+Insert into customer_info	# inserting values in table by columns name
+(first_name,last_name,salary) 
+values
+('Bilal','Khan',45000),
+('Daniyal','Javeed',35000),
+('Ankit','Sharma',NULL)		# There is a null value here
+;
+
+drop table customer_info;	# deleting table
+drop database customers;	# deleting database customers
+
+#################################
+
+select * from customer_info 
+where salary is null;		# show all rows with null value present in salary column
+
+select * from customer_info 
+where salary is not null;	# show all rows didn't contain null value in salary column
+
+update customer_info 		# SQL Update statement
+set salary=45000 where id=5;	# replaced null value with a intger on id 5
+
+delete from customer_info 	# SQL delete statement
+where id=5;			# delete id/row 5
+
+alter table customer_info 	# SQL alter table
+add email varchar(25);		# add new column is existing table
+
+alter table customer_info 	# added another column name dob type is date
+add dob date;
+
+alter table customer_info 	# SQL modify statement
+modify dob year;		# changed datatype from date to year
+select * from customer_info;
+
+alter table customer_info 	# alter statement 
+drop column email;		# to drop column
+
+################################# Not Null, Unique, Primary Key
+
+create database Practice1;	# creating database
+
+use Practice1;			# delecting that database
+
+create table student(		# creating table
+id int not null,		# can't be null
+first_name varchar(25) not null,
+last_name varchar(25) not null,
+age int
+);
+
+
+Alter table student		# modify statement 
+modify age int not null;	# added that age can't be null
+
+
+create table person(		# creating table
+id int not null,
+first_name varchar(25) not null,
+last_name varchar(25) not null,
+age int not null,
+unique(id)			# id must be unique
+);
+
+
+insert into person 		# inserting values in table
+values
+(1, 'Bilal','Khan',33),
+(2, 'Jamal','Don',33)
+;
+
+insert into person 		# will give error 
+values
+(1, 'Don','Khan',56);		# because id is not unique
+
+
+Alter table person		# Alter statement
+Add unique(first_name);		# unique can be added later
+
+insert into person 		# will give error
+values
+(6, 'Bilal','Khan',33);		# because first name is not unique
+
+# another way add 2 feature to make unique constraint
+
+Alter table person		# Alter constraint to add 2 features
+add constraint uc_person unique
+(age,first_name);		# They both must be unique
+
+alter table person
+drop index uc_person;		# drop unique constraint created above
+
+create table person1(		# creating table
+id int not null,
+first_name varchar(25) not null,
+last_name varchar(25) not null,
+age int,
+constraint pk_person primary key
+(id,last_name)			# created constraint with 2 primary key
+);
+
+alter table person1
+drop primary key;		# deleted all primary keys
+
+alter table person1
+add primary key(id);		# adding 1 primary key
+
+################################# # MYSQL indexes
+
+show databases;
+use customer;
+
+create table student(
+id integer not null,
+first_name varchar(10),
+last_name varchar(10),
+age int
+);
+
+create index index_age			# single index
+on student(age);
+
+create index index_age_first_name	# muti index
+on student(age,first_name);
+
+alter table student			# drop index
+drop index index_age_first_name;
+
+alter table student			# drop index
+drop index index_age;
+
+################################# # SQL Query
+# Views is a virtual table based on the result of an SQL Query.
+
+create table student(
+studentid int auto_increment,
+first_name varchar(25) not null,
+last_name varchar(25) not null,
+age int,
+primary key(studentid)
+);
+
+insert into student values
+(1, "Bilal","Khan",31),
+(2, "Danyal","Javeed",25),
+(3, "Maha","Arbaz",21);
+
+create table department(
+studentid int auto_increment,
+department_name varchar(25) not null,
+foreign key(studentid) references student(studentid)
+);
+
+insert into department values
+(1, "Computer science"),
+(2, "Electronics"),
+(3, "Mechnical");
+
+# created 2 tables above
+
+create view student_info as				# SQL View
+select first_name,last_name,age from student
+inner join department using (studentid);
+
+select * from student_info;				# not an actual table but its a virtual table
+
+drop view student_info;					# dropped SQL View
+
+################################# # 
+
+/*
+1. Inner Join
+2. Left Join
+3. Right Join
+4. Full Join
+5. Natural Join
+6. Cross Join
+*/
+
+select * from student;
+select * from department;
+
+# inner join	# show only present in both
+
+select * from student inner join department
+on student.studentid=department.studentid;
+
+# Left Join	# Show all right even there left part is null
+
+select student.first_name,student.last_name,student.age,department.department_name
+from student left join department
+on student.studentid=department.studentid;
+
+# Right Join	# show all the entry of right
+
+select student.first_name,student.last_name,student.age,department.department_name
+from student right join department
+on student.studentid=department.studentid;
+
+# Full outer Join	# combines 2 join
+
+select student.first_name,student.last_name,student.age,department.department_name
+from student left join department
+on student.studentid=department.studentid
+union
+select student.first_name,student.last_name,student.age,department.department_name
+from student right join department
+on student.studentid=department.studentid;
+
+# cross join	# show all the possibilty in can be shown
+
+select student.first_name,student.last_name,student.age,department.department_name
+from student cross join department;
+
+# Natural join	# show values linked by common values
+
+select student.first_name,student.last_name,student.age,department.department_name
+from student natural join department;
