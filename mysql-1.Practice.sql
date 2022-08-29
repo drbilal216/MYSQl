@@ -431,7 +431,18 @@ on student.studentid=department.studentid;
 select student.first_name,student.last_name,student.age,department.department_name
 from student cross join department;
 
-# Natural join	# show values linked by common values
+# Natural join	
 
 select student.first_name,student.last_name,student.age,department.department_name
 from student natural join department;
+
+# Store Procedure
+
+use customer;
+select * from student;
+
+#call get_student_info;
+# first we save output
+call get_student_info(@record,27);
+# then we print
+select @record as Totalrecords;

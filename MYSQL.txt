@@ -244,3 +244,66 @@ from student cross join department;
 
 select student.first_name,student.last_name,student.age,department.department_name
 from student natural join department;
+
+########################
+
+### mysql stored procedure
+
+# creating a procedure
+CREATE DEFINER=`root`@`localhost` PROCEDURE `get_student_info`()
+BEGIN
+select * from student;
+END
+
+# using it
+call get_student_info;
+
+# will print only age with 31
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `get_student_info`()
+BEGIN
+select * from student where student.age=31;
+END
+
+# using it
+call get_student_info;
+
+## input parameters
+
+# now here we can give input of what age to display
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `get_student_info`(in age int)
+BEGIN
+select * from student where student.age=age;
+END
+
+# using it
+call get_student_info(27);
+
+## Output parameters
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `get_student_info`(out records int)
+BEGIN
+select count(*) into records from student where student.age=31;
+END
+
+# using it
+# first we save output
+call get_student_info(@record);
+# then we print
+select @record as Totalrecords;
+
+## Using in and out
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `get_student_info`(inout records int,in age int)
+BEGIN
+select count(*) into records from student where student.age=age;
+END
+
+# using it # now we can also give input
+# first we save output
+call get_student_info(@record,27);
+# then we print
+select @record as Totalrecords;
+
+#################################
